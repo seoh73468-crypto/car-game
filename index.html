@@ -123,7 +123,7 @@ const colOf=id=>new THREE.Color().setHSL(((hs(id)>>>0)%360)/360,.7,.5).getHex();
 function leave(){if(room)api('/rooms/'+room+'/p/'+myId,'DELETE');room=null;online=false;Object.values(rem).forEach(r=>scene.remove(r.m));rem={}}
 async function goOnline(){
  if(!DB){alert('온라인 기능은 서버(DB) 설정 후 사용할 수 있어요');return}
- const code=(prompt('방 코드 (비우면 새 방)','')||Math.random().toString(36).slice(2,6)).replace(/[^\w]/g,'').slice(0,8)||'room';
+ const code=(prompt('방 코드 (비우면 공용방)','')||'lobby').replace(/[^\w]/g,'').slice(0,8)||'room';
  let t=await api('/rooms/'+code+'/track');
  if(!t||!okPts(t.p)){t={p:curPts||TR.a.p,id:curId};await api('/rooms/'+code+'/track','PUT',t)}
  room=code;startRace(okPts(t.p),String(t.id).replace(/[^\w-]/g,''),true)}
