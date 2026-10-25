@@ -37,7 +37,7 @@ const myId=Math.random().toString(36).slice(2,8);
 const W=14,MAXV=48,LAPS=3,N=400,big=$('big');
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x87b8e8);scene.fog=new THREE.Fog(0x87b8e8,60,260);
 const cam=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,400);
-const ren=new THREE.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.setSize(innerWidth,innerHeight);document.body.prepend(ren.domElement);
+const ren=new THREE.WebGLRenderer({antialias:false});ren.setPixelRatio(Math.min(devicePixelRatio,1.5));ren.setSize(innerWidth,innerHeight);document.body.prepend(ren.domElement);
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
 scene.add(new THREE.HemisphereLight(0xffffff,0x556655,.9));
 const sun=new THREE.DirectionalLight(0xffffff,.6);sun.position.set(20,40,20);scene.add(sun);
@@ -71,7 +71,7 @@ function buildTrack(pts){
  trackG.add(ribbon(0,W,.02,C(0x3a3a40,0x45454c,6)));
  for(const s of[-1,1])trackG.add(ribbon(s*(W/2+.75),1.5,.03,C(0xe63946,0xffffff,3)));
  const sl=box(W,.05,2,0xffffff);sl.position.set(P[0].x,.06,P[0].z);sl.rotation.y=Math.atan2(-Nm[0].z,Nm[0].x);trackG.add(sl);
- for(let i=0;i<140;i++){const x=(Math.random()-.5)*500,z=(Math.random()-.5)*500;let ok=1;
+ for(let i=0;i<80;i++){const x=(Math.random()-.5)*500,z=(Math.random()-.5)*500;let ok=1;
   for(let j=0;j<N;j+=4){const dx=P[j].x-x,dz=P[j].z-z;if(dx*dx+dz*dz<(W/2+9)**2){ok=0;break}}
   if(ok){const h=4+Math.random()*6,tr=box(1,h,1,0x6b4a2b),lf=box(4,4,4,0x2e7d32);tr.position.set(x,h/2,z);lf.position.set(x,h+1.5,z);trackG.add(tr,lf)}}
  scene.add(trackG)}
@@ -128,8 +128,8 @@ async function goOnline(){
  if(!t||!okPts(t.p)){t={p:curPts||TR.a.p,id:curId};await api('/rooms/'+code+'/track','PUT',t)}
  room=code;startRace(okPts(t.p),String(t.id).replace(/[^\w-]/g,''),true)}
 function netTick(dt){
- sendT-=dt;if(sendT<=0){sendT=.1;api('/rooms/'+room+'/p/'+myId,'PUT',{x:+pl.x.toFixed(1),z:+pl.z.toFixed(1),h:+pl.h.toFixed(2),lap:pl.lap,idx:pl.idx,t:Date.now()})}
- pollT-=dt;if(pollT<=0){pollT=.25;api('/rooms/'+room+'/p').then(o=>{if(!o||!online)return;const now=performance.now();
+ sendT-=dt;if(sendT<=0){sendT=.08;api('/rooms/'+room+'/p/'+myId,'PUT',{x:+pl.x.toFixed(1),z:+pl.z.toFixed(1),h:+pl.h.toFixed(2),lap:pl.lap,idx:pl.idx,t:Date.now()})}
+ pollT-=dt;if(pollT<=0){pollT=.1;api('/rooms/'+room+'/p').then(o=>{if(!o||!online)return;const now=performance.now();
   for(const id in o){if(id===myId)continue;const d=o[id];if(!d||![d.x,d.z,d.h].every(Number.isFinite))continue;
    let r=rem[id];if(!r){r={m:mkCar(colOf(id)),x:d.x,z:d.z,h:d.h,lap:-1,idx:0,seen:now,t:0,isP:0};scene.add(r.m);rem[id]=r}
    if(d.t!==r.t){r.t=d.t;r.seen=now}r.tx=d.x;r.tz=d.z;r.th=d.h;r.lap=+d.lap||0;r.idx=+d.idx||0}
