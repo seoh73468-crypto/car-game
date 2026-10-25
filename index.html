@@ -5,13 +5,14 @@
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#111;font-family:sans-serif;touch-action:none;user-select:none}
 #hud{position:fixed;top:10px;left:0;right:0;text-align:center;color:#fff;font-size:20px;font-weight:700;text-shadow:0 2px 4px #000;pointer-events:none}
-#msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:rgba(0,0,0,.55);font-size:26px;text-align:center;line-height:1.5}
+#msg{z-index:10;position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:rgba(0,0,0,.55);font-size:26px;text-align:center;line-height:1.5}
 #msg small{font-size:15px;opacity:.8}
 .z{position:fixed;bottom:0;width:50%;height:45%;display:flex;align-items:flex-end;justify-content:center;color:rgba(255,255,255,.35);font-size:60px;padding-bottom:20px;box-sizing:border-box}
 </style></head><body>
 <div id="hud">0 m · 0 km/h</div>
 <div id="msg"><div>🏎️ ROAD RUSH<br><small>좌우로 핸들링, 차들을 피하세요<br>화면 왼쪽/오른쪽 터치 · 키보드 ←→ / A D<br><br>탭해서 시작</small></div></div>
 <div class="z" id="L" style="left:0">◀</div><div class="z" id="R" style="right:0">▶</div>
+<script>onerror=(m)=>{document.getElementById("msg").innerHTML="오류: "+m}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const hud=document.getElementById('hud'),msg=document.getElementById('msg');
